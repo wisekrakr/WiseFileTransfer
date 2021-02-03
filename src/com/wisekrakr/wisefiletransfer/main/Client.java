@@ -140,7 +140,8 @@ public class Client extends CryptoClient {
             throw new IllegalStateException("Invalid key",t);
         }
 
-        secretKey = getSecretKey(rsaECipherServerPublic, out);
+        secretKey = getSecretKey(rsaECipherServerPublic);
+        Messenger.sendMsg(out, DatatypeConverter.printBase64Binary(getEncryptedKey()));
 
         authenticated = true;
 

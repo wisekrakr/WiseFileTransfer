@@ -9,10 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
+/**
+ * StartUp GUI. The user will see this GUI first. Enter a username and connect.
+ * Extends Java's JFrame and a GUI interface with show and close methods attached
+ */
 public class ConnectionGUI extends JFrame implements GUI {
 
     private JPanel panel;
-    private ClientInstance clientInstance;
+    private final ClientInstance clientInstance;
 
     public ConnectionGUI(ClientInstance clientInstance){
         this.clientInstance = clientInstance;
@@ -45,20 +49,12 @@ public class ConnectionGUI extends JFrame implements GUI {
         JTextField textField = new JTextField("username/nickname");
 
         JButton connectButton = new JButton("Connect to server");
-        connectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clientInstance.connect(textField.getText());
+        connectButton.addActionListener(e -> {
+            clientInstance.connect(textField.getText());
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new ClientGUI(clientInstance).showGUI();
-                    }
-                });
+            SwingUtilities.invokeLater(() -> new ClientGUI(clientInstance).showGUI());
 
-                closeGUI();
-            }
+            closeGUI();
         });
 
         panel.add(textField);

@@ -9,6 +9,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * JPanel with a ListSelectionListener. Creates and shows a list of files that can also be deleted
+ * {@link RemoveFromListListener} with a push of a button.
+ */
 public class ListView extends JPanel implements ListSelectionListener {
     private final JList<String> list;
     private final DefaultListModel<String> listModel;

@@ -5,13 +5,15 @@ import com.wisekrakr.wisefiletransfer.gui.tools.ListView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The ClientGUI extends Java's JFrame and implements a GUI Interface with show and close methods
+ * Search for files and send them with this simple GUI. The Files are shown in a {@link ListView}
+ */
 public class ClientGUI extends JFrame implements GUI {
 
     private JPanel buttonPanel;
@@ -36,7 +38,7 @@ public class ClientGUI extends JFrame implements GUI {
         setFocusable(true);
         setLocationRelativeTo(null);
 
-        buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel = new JPanel(new GridLayout(0,1));
         buttonPanel.setBackground(DARK_CYAN);
 
         listView = new ListView();
@@ -51,7 +53,7 @@ public class ClientGUI extends JFrame implements GUI {
         terminate();
 
         add(new JLabel(clientInstance.username()), BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.PAGE_END);
+        add(buttonPanel, BorderLayout.EAST);
         setVisible(true);
     }
 
@@ -63,7 +65,6 @@ public class ClientGUI extends JFrame implements GUI {
 
     private void fileSearching(){
         JButton fileSearch = new JButton("Search for Files", null);
-
         fileSearch.addActionListener(e -> {
             fc = new JFileChooser();
             fc.setMultiSelectionEnabled(true);

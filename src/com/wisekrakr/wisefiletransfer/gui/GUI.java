@@ -2,6 +2,10 @@ package com.wisekrakr.wisefiletransfer.gui;
 
 import java.awt.*;
 
+/**
+ * Simple interface with open and close methods for JFrame
+ * Added some constants that will be used for every JFrame
+ */
 public interface GUI {
     void showGUI();
     void closeGUI();

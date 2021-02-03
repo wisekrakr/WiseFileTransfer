@@ -19,10 +19,16 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+/**
+ * Abstract class that handles multiple important operations for a Secure connection.
+ * All necessary steps for key generating to encrypting keys can be found in this class.
+ * A Client should extend this class so that it can simple reference these methods for easy use.
+ */
 public abstract class CryptoClient extends Thread{
 
     private String privateKeyFilePath;
     private String certFilePath;
+    private byte[] encryptedKey;
 
     public CryptoClient(String privateKeyFilePath, String certFilePath) {
         this.privateKeyFilePath = privateKeyFilePath;
@@ -32,13 +38,15 @@ public abstract class CryptoClient extends Thread{
     public CryptoClient() {
     }
 
+    /**
+     * Creates a key generator (RSA asymmetric encryption) and uses 2048 bit keys
+     * Generates a key pair
+     * @return new made key pair
+     */
     public KeyPair generateKeyPair(){
         try {
-            //Create key generator (RSA asymmetric encryption)
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            //Use 1024 bit keys
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance(Constants.RSA);
             keyGen.initialize(Constants.KEY_SIZE);
-            //Generate keyPair
             return keyGen.generateKeyPair();
         }catch (Throwable t){
             throw new IllegalStateException("Could not generate keypair",t);
@@ -64,6 +72,11 @@ public abstract class CryptoClient extends Thread{
 
     }
 
+    /**
+     * @return New Cipher instance with "RSA/ECB/PKCS1Padding" cryptography for encryption and decryption
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAlgorithmException
+     */
     public Cipher rsaCryptoCipher() throws NoSuchPaddingException, NoSuchAlgorithmException {
         return Cipher.getInstance(Constants.RSA_ECB_PADDING);
     }
@@ -84,6 +97,12 @@ public abstract class CryptoClient extends Thread{
         }
     }
 
+    /**
+     * Used to construct a SecretKey from a byte array
+     * @param AESKeyString string send by another party
+     * @param rsaDCipher a Cipher instance for decryption
+     * @return a secret key from the given byte array, using the first len bytes of key, starting at offset inclusive.
+     */
     public Key getAESKey(String AESKeyString, Cipher rsaDCipher) {
         byte[] byteKey = DatatypeConverter.parseBase64Binary(AESKeyString);
         byte[] decryptedByteKey;
@@ -98,18 +117,25 @@ public abstract class CryptoClient extends Thread{
     /**
      * Generates secret key using AES algorithm, encrypt it with server's public key, send it to server
      * @param rsaECipherServerPublic Cipher for encryption
-     * @param out PrintWriter to send messages with
      * @return a key to send with files
      */
-    public SecretKey getSecretKey(Cipher rsaECipherServerPublic, PrintWriter out){
+    public SecretKey getSecretKey(Cipher rsaECipherServerPublic){
         SecretKey key;
         try {
             key = KeyGenerator.getInstance(Constants.AES).generateKey();
-            byte[] encryptedKey = rsaECipherServerPublic.doFinal(key.getEncoded());
-            Messenger.sendMsg(out, DatatypeConverter.printBase64Binary(encryptedKey));
+            encryptedKey = rsaECipherServerPublic.doFinal(key.getEncoded());
+
         }catch (Throwable t){
             throw new IllegalStateException("Could not generate secret key",t);
         }
         return key;
+    }
+
+    /**
+     * Byte array from an encrypted secret key
+     * @return encrypted key byte array
+     */
+    public byte[] getEncryptedKey() {
+        return encryptedKey;
     }
 }
