@@ -4,7 +4,7 @@ import com.wisekrakr.wisefiletransfer.Constants;
 import com.wisekrakr.wisefiletransfer.authentication.CertificateHandler;
 import com.wisekrakr.wisefiletransfer.authentication.CryptoClient;
 import com.wisekrakr.wisefiletransfer.authentication.NonceAuthenticator;
-import com.wisekrakr.wisefiletransfer.communication.FileSender;
+import com.wisekrakr.wisefiletransfer.communication.FileTransfer;
 import com.wisekrakr.wisefiletransfer.communication.crypto.FileDecryption;
 import com.wisekrakr.wisefiletransfer.util.Messenger;
 
@@ -39,7 +39,6 @@ public class Client extends CryptoClient {
     private BufferedReader in;
     private boolean authenticated;
     private SecretKey secretKey; // key for file transferring
-    private Thread chatThread;
 
     public Client(String username, String hostName, int port, String privateKeyFilePath, String certFilePath){
         super(privateKeyFilePath,certFilePath);
@@ -153,9 +152,7 @@ public class Client extends CryptoClient {
      */
     public void sendOverFiles(){
         Messenger.sendMsg(out, Constants.SECURE_FILE_TRANSFER);
-
-        FileSender fileSender = new FileSender();
-        fileSender.sendFiles((HashMap<String, File>) filesToBeSend, out, secretKey);
+        FileTransfer.sendFiles((HashMap<String, File>) filesToBeSend, out, secretKey);
 
         System.out.println("told server all encrypted files are sent");
     }

@@ -48,7 +48,7 @@ public class FileDecryption {
         return decryptedFileBytes;
     }
 
-    public static void handleDecryption(byte[] encryptedDataFile, String encryptedFileString, String fileName, Cipher AESDCipher, Map<String, Long> fileUploadTimings, long startTime) throws Exception{
+    public static void handleDecryption(byte[] encryptedDataFile, String encryptedFileString, String fileName, Cipher AESDCipher) throws Exception{
         encryptedDataFile = DatatypeConverter.parseBase64Binary(encryptedFileString);
 
         byte[] clientDecryptedFileBytes = decryptFile(encryptedDataFile,AESDCipher);
@@ -63,7 +63,6 @@ public class FileDecryption {
         fileOutput.write(clientDecryptedFileBytes, 0, clientDecryptedFileBytes.length);
         fileOutput.close();
         System.out.println("successfully saved client's file : " + fileName);
-        fileUploadTimings.put(fileName, System.currentTimeMillis() - startTime);
     }
 
 }

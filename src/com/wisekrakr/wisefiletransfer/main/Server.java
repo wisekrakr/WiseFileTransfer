@@ -4,7 +4,7 @@ import com.wisekrakr.wisefiletransfer.Constants;
 import com.wisekrakr.wisefiletransfer.authentication.CertificateHandler;
 import com.wisekrakr.wisefiletransfer.authentication.CryptoClient;
 import com.wisekrakr.wisefiletransfer.authentication.NonceAuthenticator;
-import com.wisekrakr.wisefiletransfer.communication.FileReceiver;
+import com.wisekrakr.wisefiletransfer.communication.FileTransfer;
 import com.wisekrakr.wisefiletransfer.communication.crypto.FileDecryption;
 import com.wisekrakr.wisefiletransfer.util.Messenger;
 
@@ -27,6 +27,11 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Basic server that will receive a connection from a client, and that will trigger the authentication protocol.
+ * When the client is authenticated, the client can send files.
+ * Authentication through certificates. The server is the CA and will request a signed certificate.
+ */
 public class Server extends CryptoClient {
 
     public static void main(String[] args) {
@@ -35,18 +40,14 @@ public class Server extends CryptoClient {
 
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
     private final NonceAuthenticator nonceAuthenticator;
     private final CertificateHandler certificateHandler;
-    private final String privateKeyFilePath;
     private final String certFilePath;
     private final List<User> clients;
 
     public Server(String privateKeyFilePath, String certFilePath){
         super(privateKeyFilePath, certFilePath);
 
-        this.privateKeyFilePath = privateKeyFilePath;
         this.certFilePath = certFilePath;
         this.clients = new ArrayList<>();
 
@@ -98,8 +99,8 @@ public class Server extends CryptoClient {
         final Cipher rsaECipherPrivate = rsaCryptoCipher();
         rsaECipherPrivate.init(Cipher.ENCRYPT_MODE, privateKey);
 
-        in = new BufferedReader(new InputStreamReader(new DataInputStream(clientSocket.getInputStream())));
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(new DataInputStream(clientSocket.getInputStream())));
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
         // Create new user for client thread pool
         String username = in.readLine();
@@ -108,7 +109,7 @@ public class Server extends CryptoClient {
 
         Messenger.sendMsg(out, newUser.getNickname());
 
-        boolean proceed = authenticationProtocol(in,out,rsaECipherPrivate);
+        boolean proceed = authenticationProtocol(in, out,rsaECipherPrivate);
 
         if(!proceed){
             System.out.println("Authentication protocol failed!");
@@ -157,8 +158,7 @@ public class Server extends CryptoClient {
      */
     private void receiveFiles(BufferedReader in, Cipher AESCipher, PrivateKey privateKey) {
         try {
-            FileReceiver fileReceiver = new FileReceiver();
-            fileReceiver.receiveFiles(in, rsaCryptoCipher(),AESCipher,privateKey);
+            FileTransfer.receiveFiles(in, rsaCryptoCipher(),AESCipher,privateKey);
         }catch (Throwable t){
             throw new IllegalStateException("Could not receive encrypted files",t);
         }

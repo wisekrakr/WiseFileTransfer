@@ -11,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * This class features multiple methods that will handle nonce operations on either the server or client side.
+ */
 public class NonceAuthenticator {
 
     private String nonceString;
