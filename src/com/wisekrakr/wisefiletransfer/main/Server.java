@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 public class Server extends CryptoClient {
 
     public static void main(String[] args) {
+
         new Server(Constants.PRIVATE_KEY_SERVER, Constants.SERVER_CERT).start();
     }
 

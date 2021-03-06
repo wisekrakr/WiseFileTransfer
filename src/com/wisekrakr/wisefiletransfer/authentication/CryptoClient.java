@@ -2,7 +2,6 @@ package com.wisekrakr.wisefiletransfer.authentication;
 
 
 import com.wisekrakr.wisefiletransfer.Constants;
-import com.wisekrakr.wisefiletransfer.util.Messenger;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -10,7 +9,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
