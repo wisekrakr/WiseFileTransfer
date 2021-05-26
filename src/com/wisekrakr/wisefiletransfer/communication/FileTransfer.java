@@ -9,7 +9,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
-import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Executor;
@@ -65,7 +64,7 @@ public class FileTransfer {
 
     }
 
-    public static void receiveFiles(BufferedReader in, Cipher rsaDecryptCipherPrivate, Cipher AESCipher, PrivateKey privateKey){
+    public static void receiveFiles(BufferedReader in, Cipher AESCipher){
         boolean clientDone;
 
         final int NUMBER_OF_THREADS = (int) ((Runtime.getRuntime().availableProcessors()*0.8) * 1.5);
@@ -96,7 +95,6 @@ public class FileTransfer {
                 phaser.register();
                 Runnable decryptionWorker = () -> {
                     try {
-                        rsaDecryptCipherPrivate.init(Cipher.DECRYPT_MODE, privateKey);
                         FileDecryption.handleDecryption(encryptedDataFile, clientEncryptedFileString, clientsFileName,
                                 AESCipher);
                     } catch (Throwable t) {

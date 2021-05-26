@@ -136,14 +136,13 @@ public class Server extends CryptoClient {
         Cipher AESCipher = Cipher.getInstance(Constants.AES);
         AESCipher.init(Cipher.DECRYPT_MODE, AESKey);
 
-        //todo Either go for file transferring or switch to chat
         //get client message of choice
         //start that operation
         String nextOperation = in.readLine();
         System.out.println("Server next operation: " + nextOperation);
         if(nextOperation.equals(Constants.SECURE_FILE_TRANSFER)){
             Messenger.sendMsg(out, "go for files");
-            receiveFiles(in, AESCipher, privateKey);
+            receiveFiles(in, AESCipher);
 
         }else {
             if(clients.isEmpty()){
@@ -157,9 +156,9 @@ public class Server extends CryptoClient {
     /**
      * Receive encrypted files from a client
      */
-    private void receiveFiles(BufferedReader in, Cipher AESCipher, PrivateKey privateKey) {
+    private void receiveFiles(BufferedReader in, Cipher AESCipher) {
         try {
-            FileTransfer.receiveFiles(in, rsaCryptoCipher(),AESCipher,privateKey);
+            FileTransfer.receiveFiles(in, AESCipher);
         }catch (Throwable t){
             throw new IllegalStateException("Could not receive encrypted files",t);
         }
