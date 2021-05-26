@@ -12,7 +12,7 @@ This project was made to learn about public key infrastructure, how to create ce
 to encrypt and decrypt messages, so that the dreadful "Middle Man" can't get to all the secrets.
 This study gave me more understanding about what happens behind a secure connection. 
 
-#### The Authentication Protocol
+#### The Authentication Protocol -> based of (https://github.com/yinjisheng311/SecureFileTransfer) 
 The protocol will authenticate both the server to the client, and client to server.
 So that both sides know that the right recipient is getting the data.
  - A nonce request is sent from client to server to prevent playback attacks. 
