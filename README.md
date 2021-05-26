@@ -15,12 +15,12 @@ This study gave me more understanding about what happens behind a secure connect
 #### The Authentication Protocol
 The protocol will authenticate both the server to the client, and client to server.
 So that both sides know that the right recipient is getting the data.
-*A nonce request is sent from client to server to prevent playback attacks. 
-*The server will encrypt this nonce with its own private key and sent it back to the client.
-*The client will then request the server's signed certificate to decrypt the encrypted nonce.
-*If the nonce of the client and the server nonce reply matches, the client can be assured of both the identity of the server, 
+-A nonce request is sent from client to server to prevent playback attacks. 
+-The server will encrypt this nonce with its own private key and sent it back to the client.
+-The client will then request the server's signed certificate to decrypt the encrypted nonce.
+-If the nonce of the client and the server nonce reply matches, the client can be assured of both the identity of the server, 
 as affirmed by the trusted certification authority, and the absence of a playback attack.
-*The Server will repeat this procedure as well, so it can be assured of the client identity.
+-The Server will repeat this procedure as well, so it can be assured of the client identity.
 When a client is authenticated it can send an encrypted file to the server.
 
 <p align="center">
